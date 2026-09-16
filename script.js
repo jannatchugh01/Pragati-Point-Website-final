@@ -420,18 +420,18 @@ async function loadPublicGallery() {
 
     /* Add image to item */
 
-    item.appendChild(
-      image
-    );
+    const link = document.createElement("a");
 
+    link.href = data.publicUrl;
+    link.target = "_blank";
+    link.rel = "noopener";
 
-    /* Add item to gallery */
+    link.appendChild(image);
 
-    gallery.appendChild(
-      item
-    );
+    item.appendChild(link);
+    gallery.appendChild(item);
 
-  });
+      });
 
 }
 
