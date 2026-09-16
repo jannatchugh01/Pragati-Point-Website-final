@@ -1,0 +1,746 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Pragati Point | Admin Panel</title>
+
+  <link rel="stylesheet" href="style.css">
+
+  <style>
+    .admin-page {
+      min-height: 100vh;
+      background: #f5f7fb;
+      padding: 50px 20px;
+    }
+
+    .admin-container {
+      max-width: 900px;
+      margin: auto;
+    }
+
+    .admin-header {
+      text-align: center;
+      margin-bottom: 35px;
+    }
+
+    .admin-header h1 {
+      color: #0b1f3a;
+      margin-bottom: 8px;
+    }
+
+    .admin-header p {
+      color: #666;
+    }
+
+    .admin-card {
+      background: #fff;
+      padding: 30px;
+      border-radius: 18px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, .08);
+      margin-bottom: 25px;
+    }
+
+    .admin-card h2 {
+      color: #0b1f3a;
+      margin-bottom: 20px;
+    }
+
+    .admin-input {
+      width: 100%;
+      padding: 13px 15px;
+      border: 1px solid #ddd;
+      border-radius: 10px;
+      margin-bottom: 15px;
+      font-size: 15px;
+      box-sizing: border-box;
+    }
+
+    .admin-button {
+      border: none;
+      background: #0b1f3a;
+      color: white;
+      padding: 12px 22px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: 700;
+    }
+
+    .admin-button:hover {
+      background: #152f55;
+    }
+
+    .logout-button {
+      background: #b42318;
+    }
+
+    .logout-button:hover {
+      background: #8f1c13;
+    }
+
+    .hidden {
+      display: none;
+    }
+
+    .status {
+      margin-top: 15px;
+      font-size: 14px;
+      font-weight: 600;
+    }
+
+    .gallery-admin {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+      gap: 18px;
+      margin-top: 25px;
+    }
+
+    .gallery-admin-item {
+      border: 1px solid #eee;
+      border-radius: 12px;
+      overflow: hidden;
+      background: #fafafa;
+    }
+
+    .gallery-admin-item img {
+      width: 100%;
+      height: 150px;
+      object-fit: cover;
+      display: block;
+    }
+
+    .delete-button {
+      width: 100%;
+      border: none;
+      padding: 10px;
+      background: #b42318;
+      color: white;
+      cursor: pointer;
+      font-weight: 700;
+    }
+
+    .delete-button:hover {
+      background: #8f1c13;
+    }
+
+    .upload-area {
+      border: 2px dashed #d6a83d;
+      border-radius: 12px;
+      padding: 30px;
+      text-align: center;
+      margin-top: 15px;
+    }
+
+    .upload-area input {
+      max-width: 100%;
+    }
+
+    @media (max-width: 600px) {
+      .admin-page {
+        padding: 30px 15px;
+      }
+
+      .admin-card {
+        padding: 22px;
+      }
+
+      .gallery-admin {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <main class="admin-page">
+
+    <div class="admin-container">
+
+      <!-- HEADER -->
+
+      <div class="admin-header">
+        <h1>Pragati Point</h1>
+        <p>Admin Panel</p>
+      </div>
+
+
+      <!-- ================= LOGIN ================= -->
+
+      <section id="loginSection" class="admin-card">
+
+        <h2>Admin Login</h2>
+
+        <input
+          type="email"
+          id="adminEmail"
+          class="admin-input"
+          placeholder="Admin email"
+          autocomplete="email"
+        >
+
+        <input
+          type="password"
+          id="adminPassword"
+          class="admin-input"
+          placeholder="Password"
+          autocomplete="current-password"
+        >
+
+        <button
+          id="loginButton"
+          class="admin-button"
+          type="button"
+        >
+          Login
+        </button>
+
+        <p id="loginStatus" class="status"></p>
+
+      </section>
+
+
+      <!-- ================= DASHBOARD ================= -->
+
+      <section id="dashboardSection" class="hidden">
+
+        <!-- UPLOAD -->
+
+        <div class="admin-card">
+
+          <h2>Gallery Manager</h2>
+
+          <p>
+            Upload photos that you want to display on the
+            Pragati Point website.
+          </p>
+
+          <div class="upload-area">
+
+            <input
+              type="file"
+              id="galleryFiles"
+              accept="image/*"
+              multiple
+            >
+
+            <br><br>
+
+            <button
+              id="uploadButton"
+              class="admin-button"
+              type="button"
+            >
+              Upload Photos
+            </button>
+
+            <p id="uploadStatus" class="status"></p>
+
+          </div>
+
+        </div>
+
+
+        <!-- CURRENT GALLERY -->
+
+        <div class="admin-card">
+
+          <h2>Current Gallery</h2>
+
+          <div
+            id="adminGallery"
+            class="gallery-admin"
+          ></div>
+
+          <p
+            id="galleryStatus"
+            class="status"
+          ></p>
+
+        </div>
+
+
+        <!-- LOGOUT -->
+
+        <div class="admin-card">
+
+          <button
+            id="logoutButton"
+            class="admin-button logout-button"
+            type="button"
+          >
+            Logout
+          </button>
+
+        </div>
+
+      </section>
+
+    </div>
+
+  </main>
+
+
+  <!-- ================= SUPABASE ================= -->
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+
+  <script>
+
+    /* =====================================================
+       SUPABASE CONFIGURATION
+       ===================================================== */
+
+    const SUPABASE_URL =
+      "https://tqpllyvfcnvpciasyxqn.supabase.co";
+
+    const SUPABASE_KEY =
+      "sb_publishable_1ojIIv2SwIh80LB_UJR9Hg_1s2B58-8";
+
+
+    const supabaseClient =
+      window.supabase.createClient(
+        SUPABASE_URL,
+        SUPABASE_KEY
+      );
+
+
+    /* =====================================================
+       ELEMENTS
+       ===================================================== */
+
+    const loginSection =
+      document.getElementById("loginSection");
+
+    const dashboardSection =
+      document.getElementById("dashboardSection");
+
+    const loginButton =
+      document.getElementById("loginButton");
+
+    const logoutButton =
+      document.getElementById("logoutButton");
+
+    const loginStatus =
+      document.getElementById("loginStatus");
+
+    const uploadButton =
+      document.getElementById("uploadButton");
+
+    const galleryFiles =
+      document.getElementById("galleryFiles");
+
+    const uploadStatus =
+      document.getElementById("uploadStatus");
+
+    const adminGallery =
+      document.getElementById("adminGallery");
+
+    const galleryStatus =
+      document.getElementById("galleryStatus");
+
+
+    /* =====================================================
+       SHOW DASHBOARD
+       ===================================================== */
+
+    function showDashboard() {
+
+      loginSection.classList.add("hidden");
+
+      dashboardSection.classList.remove("hidden");
+
+      loadGallery();
+
+    }
+
+
+    /* =====================================================
+       SHOW LOGIN
+       ===================================================== */
+
+    function showLogin() {
+
+      dashboardSection.classList.add("hidden");
+
+      loginSection.classList.remove("hidden");
+
+    }
+
+
+    /* =====================================================
+       LOGIN
+       ===================================================== */
+
+    loginButton.addEventListener("click", async () => {
+
+      const email =
+        document.getElementById("adminEmail")
+          .value
+          .trim();
+
+      const password =
+        document.getElementById("adminPassword")
+          .value;
+
+
+      if (!email || !password) {
+
+        loginStatus.textContent =
+          "Please enter email and password.";
+
+        return;
+
+      }
+
+
+      loginStatus.textContent =
+        "Logging in...";
+
+
+      const { error } =
+        await supabaseClient.auth.signInWithPassword({
+          email: email,
+          password: password
+        });
+
+
+      if (error) {
+
+        loginStatus.textContent =
+          "Login failed: " + error.message;
+
+        return;
+
+      }
+
+
+      loginStatus.textContent = "";
+
+      showDashboard();
+
+    });
+
+
+    /* =====================================================
+       UPLOAD PHOTOS
+       ===================================================== */
+
+    uploadButton.addEventListener("click", async () => {
+
+      const files =
+        galleryFiles.files;
+
+
+      if (!files.length) {
+
+        uploadStatus.textContent =
+          "Please choose at least one image.";
+
+        return;
+
+      }
+
+
+      uploadStatus.textContent =
+        "Uploading...";
+
+
+      let uploaded = 0;
+
+
+      for (const file of files) {
+
+        /* Only allow images */
+
+        if (!file.type.startsWith("image/")) {
+
+          continue;
+
+        }
+
+
+        /*
+          Create a unique filename.
+
+          Example:
+          1789581508131-photo.jpg
+        */
+
+        const fileName =
+          `${Date.now()}-${file.name
+            .replace(/[^a-zA-Z0-9.-]/g, "-")}`;
+
+
+        const { error } =
+          await supabaseClient.storage
+            .from("gallery")
+            .upload(fileName, file);
+
+
+        if (error) {
+
+          uploadStatus.textContent =
+            "Upload failed: " + error.message;
+
+          return;
+
+        }
+
+
+        uploaded++;
+
+      }
+
+
+      uploadStatus.textContent =
+        `${uploaded} photo${uploaded !== 1 ? "s" : ""} uploaded successfully!`;
+
+
+      galleryFiles.value = "";
+
+
+      /* Refresh admin gallery */
+
+      loadGallery();
+
+    });
+
+
+    /* =====================================================
+       LOAD ADMIN GALLERY
+       ===================================================== */
+
+    async function loadGallery() {
+
+      galleryStatus.textContent =
+        "Loading gallery...";
+
+      adminGallery.innerHTML = "";
+
+
+      const { data: files, error } =
+        await supabaseClient.storage
+          .from("gallery")
+          .list("", {
+            limit: 100,
+            sortBy: {
+              column: "created_at",
+              order: "desc"
+            }
+          });
+
+
+      if (error) {
+
+        console.error(
+          "ADMIN GALLERY ERROR:",
+          error
+        );
+
+        galleryStatus.textContent =
+          "Gallery could not be loaded: " +
+          error.message;
+
+        return;
+
+      }
+
+
+      if (!files || files.length === 0) {
+
+        galleryStatus.textContent =
+          "No photos uploaded yet.";
+
+        return;
+
+      }
+
+
+      galleryStatus.textContent =
+        `${files.length} photo${files.length !== 1 ? "s" : ""} in gallery.`;
+
+
+      files.forEach(file => {
+
+        /*
+          Ignore folders if Supabase returns one.
+        */
+
+        if (!file.name) {
+          return;
+        }
+
+
+        const { data } =
+          supabaseClient.storage
+            .from("gallery")
+            .getPublicUrl(file.name);
+
+
+        const item =
+          document.createElement("div");
+
+        item.className =
+          "gallery-admin-item";
+
+
+        const image =
+          document.createElement("img");
+
+        image.src =
+          data.publicUrl;
+
+        image.alt =
+          "Pragati Point Gallery Photo";
+
+        image.loading =
+          "lazy";
+
+
+        const deleteButton =
+          document.createElement("button");
+
+        deleteButton.className =
+          "delete-button";
+
+        deleteButton.textContent =
+          "Delete";
+
+        deleteButton.type =
+          "button";
+
+
+        deleteButton.addEventListener(
+          "click",
+          () => deletePhoto(file.name)
+        );
+
+
+        item.appendChild(image);
+
+        item.appendChild(deleteButton);
+
+        adminGallery.appendChild(item);
+
+      });
+
+    }
+
+
+    /* =====================================================
+       DELETE PHOTO
+       ===================================================== */
+
+    async function deletePhoto(fileName) {
+
+      const confirmed =
+        confirm(
+          "Are you sure you want to delete this photo?"
+        );
+
+
+      if (!confirmed) {
+        return;
+      }
+
+
+      galleryStatus.textContent =
+        "Deleting...";
+
+
+      const { error } =
+        await supabaseClient.storage
+          .from("gallery")
+          .remove([fileName]);
+
+
+      if (error) {
+
+        console.error(
+          "DELETE ERROR:",
+          error
+        );
+
+        galleryStatus.textContent =
+          "Delete failed: " +
+          error.message;
+
+        return;
+
+      }
+
+
+      galleryStatus.textContent =
+        "Photo deleted successfully.";
+
+
+      /* Refresh gallery */
+
+      loadGallery();
+
+    }
+
+
+    /* =====================================================
+       LOGOUT
+       ===================================================== */
+
+    logoutButton.addEventListener(
+      "click",
+      async () => {
+
+        await supabaseClient.auth.signOut();
+
+        showLogin();
+
+        loginStatus.textContent =
+          "Logged out successfully.";
+
+      }
+    );
+
+
+    /* =====================================================
+       CHECK EXISTING LOGIN SESSION
+       ===================================================== */
+
+    async function checkLogin() {
+
+      const { data, error } =
+        await supabaseClient.auth.getSession();
+
+
+      if (error) {
+
+        console.error(
+          "SESSION ERROR:",
+          error
+        );
+
+        return;
+
+      }
+
+
+      if (data.session) {
+
+        showDashboard();
+
+      }
+
+    }
+
+
+    /* =====================================================
+       START
+       ===================================================== */
+
+    checkLogin();
+
+  </script>
+
+</body>
+</html>

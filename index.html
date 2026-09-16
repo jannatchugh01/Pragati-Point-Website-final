@@ -289,50 +289,27 @@
     </section>
 
     <!-- ===================== GALLERY ===================== -->
-    <section class="section gallery-section" id="gallery">
-      <div class="container">
-        <div class="section-heading centered reveal">
-          <p class="section-kicker">OUR LEARNING SPACE</p>
-          <h2>Gallery</h2>
-          <p>Real classroom and institute photographs can be added here anytime.</p>
-        </div>
+<section class="section gallery-section" id="gallery">
+  <div class="container">
 
-        <div class="gallery-grid">
+    <div class="section-heading centered reveal">
+      <p class="section-kicker">OUR LEARNING SPACE</p>
+      <h2>Gallery</h2>
+      <p>Take a look at the learning environment and moments at Pragati Point.</p>
+    </div>
 
-          <div class="gallery-placeholder large reveal">
-            <span>📚</span>
-            <p>Our Learning Space</p>
-            <small>Photos coming soon</small>
-          </div>
+    <div class="gallery-grid" id="publicGallery">
 
-          <div class="gallery-placeholder reveal">
-            <span>✏️</span>
-            <p>Teaching & Learning</p>
-            <small>Photos coming soon</small>
-          </div>
+      <!-- Photos from Supabase will appear here -->
 
-          <div class="gallery-placeholder reveal">
-            <span>🎓</span>
-            <p>Student Activities</p>
-            <small>Photos coming soon</small>
-          </div>
+    </div>
 
-          <div class="gallery-placeholder reveal">
-            <span>🏫</span>
-            <p>Pragati Point</p>
-            <small>Photos coming soon</small>
-          </div>
+    <p id="publicGalleryStatus" class="gallery-status">
+      Loading gallery...
+    </p>
 
-          <div class="gallery-placeholder reveal">
-            <span>🌟</span>
-            <p>Moments at Pragati Point</p>
-            <small>Photos coming soon</small>
-          </div>
-
-        </div>
-      </div>
-    </section>
-
+  </div>
+</section>
    
     <!-- ===================== CTA ===================== -->
     <section class="cta-section">
@@ -427,7 +404,7 @@
   </footer>
 
   <button class="back-to-top" id="backToTop" aria-label="Back to top">↑</button>
-
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="script.js"></script>
 </body>
 </html>

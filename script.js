@@ -3,139 +3,441 @@
    Main JavaScript
    ========================================================= */
 
+
+/* =========================================================
+   CONFIGURATION
+   ========================================================= */
+
 const CONFIG = {
   email: "tanejajyoti884@gmail.com",
 
-  // Add the tuition phone/WhatsApp number here later.
-  // Example: phone: "918168961636"
   phone: "918168961636",
 
-  mapsUrl: "https://maps.app.goo.gl/QxMoi981RV9bBLxZA?g_st=aw"
+  mapsUrl:
+    "https://maps.app.goo.gl/QxMoi981RV9bBLxZA?g_st=aw"
 };
 
-/* ---------------- MOBILE MENU ---------------- */
 
-const menuToggle = document.getElementById("menuToggle");
-const navLinks = document.getElementById("navLinks");
+/* =========================================================
+   MOBILE MENU
+   ========================================================= */
+
+const menuToggle =
+  document.getElementById("menuToggle");
+
+const navLinks =
+  document.getElementById("navLinks");
+
 
 menuToggle?.addEventListener("click", () => {
-  const isOpen = navLinks.classList.toggle("open");
-  menuToggle.setAttribute("aria-expanded", String(isOpen));
+
+  const isOpen =
+    navLinks.classList.toggle("open");
+
+  menuToggle.setAttribute(
+    "aria-expanded",
+    String(isOpen)
+  );
+
 });
+
 
 document.querySelectorAll("#navLinks a").forEach(link => {
+
   link.addEventListener("click", () => {
+
     navLinks.classList.remove("open");
-    menuToggle.setAttribute("aria-expanded", "false");
+
+    menuToggle.setAttribute(
+      "aria-expanded",
+      "false"
+    );
+
   });
+
 });
 
-/* ---------------- ACTIVE NAV LINK ---------------- */
 
-const sections = document.querySelectorAll("main section[id]");
-const navItems = document.querySelectorAll(".nav-links a[href^='#']");
+/* =========================================================
+   ACTIVE NAVIGATION LINK
+   ========================================================= */
 
-const sectionObserver = new IntersectionObserver(
-  entries => {
-    entries.forEach(entry => {
-      if (entry.isIntersecting) {
-        navItems.forEach(item => item.classList.remove("active"));
-        const current = document.querySelector(`.nav-links a[href="#${entry.target.id}"]`);
-        current?.classList.add("active");
-      }
+const sections =
+  document.querySelectorAll(
+    "main section[id]"
+  );
+
+const navItems =
+  document.querySelectorAll(
+    ".nav-links a[href^='#']"
+  );
+
+
+const sectionObserver =
+  new IntersectionObserver(
+    entries => {
+
+      entries.forEach(entry => {
+
+        if (entry.isIntersecting) {
+
+          navItems.forEach(item => {
+            item.classList.remove("active");
+          });
+
+
+          const current =
+            document.querySelector(
+              `.nav-links a[href="#${entry.target.id}"]`
+            );
+
+
+          current?.classList.add("active");
+
+        }
+
+      });
+
+    },
+    {
+      rootMargin: "-30% 0px -60% 0px"
+    }
+  );
+
+
+sections.forEach(section => {
+  sectionObserver.observe(section);
+});
+
+
+/* =========================================================
+   SCROLL REVEAL
+   ========================================================= */
+
+const revealObserver =
+  new IntersectionObserver(
+    entries => {
+
+      entries.forEach(entry => {
+
+        if (entry.isIntersecting) {
+
+          entry.target.classList.add(
+            "is-visible"
+          );
+
+          revealObserver.unobserve(
+            entry.target
+          );
+
+        }
+
+      });
+
+    },
+    {
+      threshold: 0.12
+    }
+  );
+
+
+document
+  .querySelectorAll(".reveal")
+  .forEach(el => {
+    revealObserver.observe(el);
+  });
+
+
+/* =========================================================
+   BACK TO TOP
+   ========================================================= */
+
+const backToTop =
+  document.getElementById("backToTop");
+
+
+if (backToTop) {
+
+  window.addEventListener("scroll", () => {
+
+    backToTop.classList.toggle(
+      "show",
+      window.scrollY > 650
+    );
+
+  });
+
+
+  backToTop.addEventListener("click", () => {
+
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth"
     });
-  },
-  { rootMargin: "-30% 0px -60% 0px" }
-);
 
-sections.forEach(section => sectionObserver.observe(section));
+  });
 
-/* ---------------- SCROLL REVEAL ---------------- */
-
-const revealObserver = new IntersectionObserver(
-  entries => {
-    entries.forEach(entry => {
-      if (entry.isIntersecting) {
-        entry.target.classList.add("is-visible");
-        revealObserver.unobserve(entry.target);
-      }
-    });
-  },
-  { threshold: 0.12 }
-);
-
-document.querySelectorAll(".reveal").forEach(el => revealObserver.observe(el));
-
-/* ---------------- BACK TO TOP ---------------- */
-
-const backToTop = document.getElementById("backToTop");
-
-window.addEventListener("scroll", () => {
-  backToTop.classList.toggle("show", window.scrollY > 650);
-});
-
-backToTop.addEventListener("click", () => {
-  window.scrollTo({ top: 0, behavior: "smooth" });
-});
-
-/* ---------------- CONTACT PHONE / WHATSAPP ---------------- */
-
-const phoneLink = document.getElementById("phoneLink");
-const phoneDisplay = document.getElementById("phoneDisplay");
-
-if (CONFIG.phone) {
-  phoneDisplay.textContent = "+91-816-896-1636";
-
-  phoneLink.href = `https://wa.me/${CONFIG.phone}`;
-  phoneLink.target = "_blank";
-  phoneLink.rel = "noopener";
 }
 
-/* ---------------- ENQUIRY FORM ---------------- */
 
-const enquiryForm = document.getElementById("enquiryForm");
-const formStatus = document.getElementById("formStatus");
+/* =========================================================
+   CONTACT PHONE / WHATSAPP
+   ========================================================= */
 
-enquiryForm?.addEventListener("submit", event => {
-  event.preventDefault();
+const phoneLink =
+  document.getElementById("phoneLink");
 
-  const data = new FormData(enquiryForm);
-  const student = data.get("student")?.trim() || "";
-  const parent = data.get("parent")?.trim() || "";
-  const studentClass = data.get("class")?.trim() || "";
-  const subject = data.get("subject")?.trim() || "";
-  const phone = data.get("phone")?.trim() || "";
-  const message = data.get("message")?.trim() || "";
+const phoneDisplay =
+  document.getElementById("phoneDisplay");
 
-  const emailSubject = encodeURIComponent(
-    `New Enquiry - ${student} - Class ${studentClass}`
+
+if (
+  CONFIG.phone &&
+  phoneLink &&
+  phoneDisplay
+) {
+
+  phoneDisplay.textContent =
+    "+91-816-896-1636";
+
+
+  phoneLink.href =
+    `https://wa.me/${CONFIG.phone}`;
+
+
+  phoneLink.target =
+    "_blank";
+
+
+  phoneLink.rel =
+    "noopener";
+
+}
+
+
+/* =========================================================
+   CURRENT YEAR
+   ========================================================= */
+
+const yearElement =
+  document.getElementById("year");
+
+
+if (yearElement) {
+
+  yearElement.textContent =
+    new Date().getFullYear();
+
+}
+
+
+/* =========================================================
+   SUPABASE PUBLIC GALLERY
+   ========================================================= */
+
+const SUPABASE_URL =
+  "https://tqpllyvfcnvpciasyxqn.supabase.co";
+
+
+const SUPABASE_KEY =
+  "sb_publishable_1ojIIv2SwIh80LB_UJR9Hg_1s2B58-8";
+
+
+const publicSupabase =
+  window.supabase.createClient(
+    SUPABASE_URL,
+    SUPABASE_KEY
   );
 
-  const body = encodeURIComponent(
-`Hello Pragati Point,
 
-I would like to enquire about coaching classes.
+/* =========================================================
+   LOAD PUBLIC GALLERY
+   ========================================================= */
 
-Student Name: ${student}
-Parent Name: ${parent}
-Class: ${studentClass}
-Subject: ${subject}
-Phone Number: ${phone}
+async function loadPublicGallery() {
 
-Message:
-${message}
+  const gallery =
+    document.getElementById(
+      "publicGallery"
+    );
 
-Thank you.`
-  );
 
-  window.location.href = `mailto:${CONFIG.email}?subject=${emailSubject}&body=${body}`;
+  const status =
+    document.getElementById(
+      "publicGalleryStatus"
+    );
 
-  formStatus.textContent =
-    "Your email app should open with the enquiry prepared. If it does not, email us directly at " + CONFIG.email + ".";
 
-  enquiryForm.reset();
-});
+  /*
+    If this page does not contain
+    the public gallery, stop here.
+  */
 
-/* ---------------- YEAR ---------------- */
+  if (!gallery) {
+    return;
+  }
 
-document.getElementById("year").textContent = new Date().getFullYear();
+
+  gallery.innerHTML = "";
+
+
+  const { data: files, error } =
+    await publicSupabase.storage
+      .from("gallery")
+      .list("", {
+
+        limit: 100,
+
+        sortBy: {
+          column: "created_at",
+          order: "desc"
+        }
+
+      });
+
+
+  /* ---------------- ERROR ---------------- */
+
+  if (error) {
+
+    console.error(
+      "Gallery could not be loaded:",
+      error
+    );
+
+
+    if (status) {
+
+      status.textContent =
+        "Gallery could not be loaded.";
+
+    }
+
+
+    return;
+  }
+
+
+  /* ---------------- NO PHOTOS ---------------- */
+
+  if (
+    !files ||
+    files.length === 0
+  ) {
+
+    if (status) {
+
+      status.textContent =
+        "Photos coming soon.";
+
+    }
+
+
+    return;
+  }
+
+
+  /* ---------------- PHOTOS FOUND ---------------- */
+
+  if (status) {
+
+    status.textContent = "";
+
+  }
+
+
+  files.forEach(file => {
+
+    /*
+      Ignore invalid entries.
+    */
+
+    if (!file.name) {
+      return;
+    }
+
+
+    /* Get public image URL */
+
+    const { data } =
+      publicSupabase.storage
+        .from("gallery")
+        .getPublicUrl(
+          file.name
+        );
+
+
+    /* Create gallery item */
+
+    const item =
+      document.createElement(
+        "div"
+      );
+
+
+    item.className =
+      "gallery-public-item";
+
+
+    /* Create image */
+
+    const image =
+      document.createElement(
+        "img"
+      );
+
+
+    image.src =
+      data.publicUrl;
+
+
+    image.alt =
+      "Pragati Point Coaching Classes Gallery";
+
+
+    image.loading =
+      "lazy";
+
+
+    /*
+      These ensure the image
+      displays correctly even if
+      the CSS does not specify them.
+    */
+
+    image.style.width =
+      "100%";
+
+    image.style.height =
+      "250px";
+
+    image.style.objectFit =
+      "cover";
+
+    image.style.display =
+      "block";
+
+
+    /* Add image to item */
+
+    item.appendChild(
+      image
+    );
+
+
+    /* Add item to gallery */
+
+    gallery.appendChild(
+      item
+    );
+
+  });
+
+}
+
+
+/* =========================================================
+   START PUBLIC GALLERY
+   ========================================================= */
+
+loadPublicGallery();
